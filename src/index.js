@@ -1,3 +1,9 @@
-const hi = (name) => "hi " + name;
+import Form from "./Form";
+import withForm from "./withForm.hoc";
 
-export default hi;
+export default Form;
+
+export {
+    Form,
+    withForm,
+};

@@ -4,7 +4,7 @@ Form state handler for React and React Native. Inspired (but not a clone or fork
 
 ## Features
 
-- todo
+- @todo :)
 
 ## License
 

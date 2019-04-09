@@ -10,7 +10,8 @@
                 },
                 "useBuiltIns": "entry"
             }
-        ]
+        ],
+        "@babel/preset-react"
     ],
     "env": {
         "testing": {
