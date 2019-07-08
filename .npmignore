@@ -1,7 +1,9 @@
 /.idea/
+/.fusebox/
 /build-scripts/
 /test/
 /dist/**/*.spec.js
+/dist-example/
 
 /.babelrc
 /yarn.lock

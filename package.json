@@ -1,6 +1,6 @@
 {
   "name": "react-foobar",
-  "version": "0.0.1-beta.1",
+  "version": "0.1.0",
   "main": "src/index.js",
   "repository": "https://github.com/dzek69/react-foobar.git",
   "author": "Jacek Nowacki @dzek69 <git-public@dzek.eu>",
@@ -26,12 +26,20 @@
     "babel-plugin-rewire": "^1.2.0",
     "cross-env": "^5.2.0",
     "docdash": "^1.0.0",
+    "dollar-dollar": "^1.0.0",
     "eslint": "^5.9.0",
     "eslint-plugin-react": "^7.12.4",
     "fs-extra": "^7.0.1",
+    "fuse-box": "^3.7.1",
     "jsdoc": "^3.5.5",
     "mocha": "^5.2.0",
-    "must": "^0.13.4"
+    "must": "^0.13.4",
+    "prop-types": "^15.7.2",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "terser": "^3.17.0",
+    "typescript": "^3.4.5",
+    "uglify-js": "^3.5.7"
   },
   "dependencies": {
     "bottom-line-utils": "^0.5.0-beta.1",

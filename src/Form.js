@@ -17,16 +17,21 @@ const getFieldValue = (field) => {
 const defaultOptions = {
     validateOn: {
         blur: false,
+        change: true,
+        // changeOnlyTouched: false,
+        mount: true,
     },
-    submitOn: {
-        blur: false,
-    },
+    // submitOn: {
+    //     blur: false,
+    // },
 };
 
 const noop = () => undefined;
 
+const hasNoError = item => item.error == null || (Array.isArray(item.error) && !item.error.length);
+
 class Form extends Component {
-    constructor(props) {
+    constructor(props) { // eslint-disable-line max-lines-per-function
         super(props);
         this.state = {
             fields: this._getFieldsAfterUpdate(props.fields, {}),
@@ -48,6 +53,8 @@ class Form extends Component {
                 if (this.state.isFinished) {
                     throw new Error("Already finished");
                 }
+
+                // await this._setTouched(true);
 
                 this.setState({
                     isSubmitting: true,
@@ -75,11 +82,27 @@ class Form extends Component {
                 }
             },
             isSubmitting: () => this.state.isSubmitting,
+            isValid: () => {
+                if (this.state.isValidating) {
+                    return false;
+                }
+                const values = Object.values(this.state.fields);
+                return values.every(hasNoError);
+            },
+            touch: this._setTouched.bind(this, true),
+            untouch: this._setTouched.bind(this, false),
+            values: () => this._getValues(),
+            forceValidate: () => this._validate("force"),
         };
     }
 
     componentDidMount() {
         this._getContext = memoizeOne(this._getContext.bind(this));
+
+        const shouldValidate = this._getOption("validateOn.mount");
+        if (shouldValidate) {
+            this._validate("mount").catch(noop);
+        }
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -88,13 +111,32 @@ class Form extends Component {
         }
     }
 
+    _setTouched(state, fields) {
+        return new Promise(resolve => {
+            this.setState(prev => {
+                // @todo don't update if there would be no changes
+                return {
+                    fields: mapValues(prev.fields, (field, key) => {
+                        if ((!fields || fields.includes(key)) && field.touched !== state) {
+                            return {
+                                ...field,
+                                touched: state,
+                            };
+                        }
+                        return field;
+                    }),
+                };
+            }, resolve);
+        });
+    }
+
     _getValues() {
         return mapValues(this.state.fields, getFieldValue);
     }
 
     async _validate(source) {
         if (this.state.isValidating) {
-            throw new Error("Already validating"); // @todo future version should just break old validation
+            throw new Error("Already validating"); // @todo future version should just stop old validation
         }
 
         this.setState({
@@ -168,26 +210,28 @@ class Form extends Component {
         this._updateFieldTouched(name, true);
         const shouldValidate = this._getOption("validateOn.blur");
         if (shouldValidate) {
-            this._validate().catch(noop);
+            this._validate("blur").catch(noop);
         }
     }
 
     _updateFieldValue(name, value) {
-        this.setState(prev => {
-            const fields = prev.fields;
-            return {
-                fields: {
-                    ...fields,
-                    [name]: {
-                        ...fields[name],
-                        props: {
-                            ...fields[name].props,
-                            value,
+        return new Promise(resolve => {
+            this.setState(prev => {
+                const fields = prev.fields;
+                return {
+                    fields: {
+                        ...fields,
+                        [name]: {
+                            ...fields[name],
+                            props: {
+                                ...fields[name].props,
+                                value,
+                            },
+                            changed: true,
                         },
-                        changed: true,
                     },
-                },
-            };
+                };
+            }, resolve);
         });
     }
 
@@ -228,9 +272,13 @@ class Form extends Component {
         return converter(value);
     }
 
-    _updateFieldValueByType(type, name, value) {
+    async _updateFieldValueByType(type, name, value) {
         const newValue = this._convertValue(type, value);
-        return this._updateFieldValue(name, newValue);
+        await this._updateFieldValue(name, newValue);
+        const shouldValidate = this._getOption("validateOn.change");
+        if (shouldValidate) {
+            this._validate("change").catch(noop);
+        }
     }
 
     _getFieldsAfterUpdate(fields, stateFields) {
@@ -250,8 +298,8 @@ class Form extends Component {
         return {
             fields: state.fields,
             form: this._form,
-            isSubmitting: state.isSubmitting, // @todo unify naming
-            isSubmitted: state.isSubmitted, // @todo unify naming
+            isSubmitting: state.isSubmitting,
+            isSubmitted: state.isSubmitted,
             isFinished: state.isFinished,
             isValidating: state.isValidating,
         };

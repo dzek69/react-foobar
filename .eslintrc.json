@@ -26,6 +26,12 @@
                 "no-unused-labels": "off",
                 "react/no-multi-comp": "off"
             }
+        },
+        {
+            "files": ["src/example/*.js"],
+            "env": {
+                "browser": true
+            }
         }
     ],
     "settings": {
