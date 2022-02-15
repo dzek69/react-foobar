@@ -1,9 +1,10 @@
 /.idea/
-/.fusebox/
 /docs/
 /dist/
-/dist-example/
+/esm/
 /node_modules/
+/.next/
 
 /*.tgz
 *.log
+*.tsbuildinfo
