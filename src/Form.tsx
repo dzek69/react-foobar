@@ -22,6 +22,7 @@ const FieldsContext = createContext<FullFields<unknown>>({});
 interface Props {
     fields: Fields;
     onSubmit: (values: { [key: string]: unknown }) => (void | Promise<void>);
+    onForm?: (form: FormCtx | null) => void;
     validate: (
         values: { [key: string]: unknown },
         extra: {
@@ -72,6 +73,18 @@ class Form extends React.Component<Props, State> {
         if (this.props.options?.validateOn?.mount ?? defaultOptions.validateOn.mount) {
             this._validate("mount").catch(noop);
         }
+
+        this.props.onForm?.(this.state.formCtx);
+    }
+
+    public componentDidUpdate(prevProps: Props, prevState: State) {
+        if (prevState.formCtx !== this.state.formCtx) {
+            this.props.onForm?.(this.state.formCtx);
+        }
+    }
+
+    public componentWillUnmount() {
+        this.props.onForm?.(null);
     }
 
     private _isFormValid() {

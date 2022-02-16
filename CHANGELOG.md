@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [UNRELEASED]
 (nothing yet)
 
+## [1.0.0-alpha.2] - 2022-02-16
+### Added
+- `onForm` prop for accessing the form "from above"
+
 ## [1.0.0-alpha.1] - 2022-02-15
 ### Changed
 - rewritten in TypeScript, with some minor but breaking API changes
