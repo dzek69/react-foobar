@@ -12,6 +12,7 @@ const Fields: React.FC<Props> = () => {
 
     const fields = useFields();
     const fullname = useField("fullname");
+    const age = useField("age");
     const checkbox = useField("checkbox");
     const checkboxSuper = useField("checkboxSuper");
     const cb = useField("cb");
@@ -49,6 +50,15 @@ const Fields: React.FC<Props> = () => {
         alert("The form is " + (isValid ? "valid" : "invalid"));
     }, [fullname.changed]);
 
+    const handleAgeClick = useCallback(() => {
+        // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+        const newAge = Math.round(Math.random() * 100);
+        form.updateValues({
+            age: newAge,
+            fullname: String(form.getValues().fullname) + String(newAge),
+        });
+    }, []);
+
     return (
         <form onSubmit={handleSubmit}>
             <div>
@@ -67,6 +77,9 @@ const Fields: React.FC<Props> = () => {
             <button type={"button"} onClick={handleValidation}>
                 Validate form
             </button>
+
+            <Input field={age} />
+            <button type={"button"} onClick={handleAgeClick}>Randomize Age and append it to name</button>
 
             <Input field={checkbox} />
             <Input field={checkboxSuper} />

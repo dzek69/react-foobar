@@ -9,6 +9,9 @@ const fields: FieldsType = {
     fullname: {
         value: "John",
     },
+    age: {
+        value: "33",
+    },
     checkbox: {
         type: "checkbox",
         value: true,

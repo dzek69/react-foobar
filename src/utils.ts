@@ -6,6 +6,7 @@ const fail = () => {
 
 const defaultFormContext: FormCtx = {
     updateValue: fail,
+    updateValues: fail,
     submit: fail,
     isSubmitting: false,
     isSubmitted: false,

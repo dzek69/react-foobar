@@ -49,6 +49,7 @@ class Form extends React.Component<Props, State> {
         this.state = {
             formCtx: {
                 updateValue: (name, value) => this._updateFieldValue(name, value),
+                updateValues: (values) => this._updateFieldValues(values),
                 submit: () => this._submit(),
                 touch: (name) => { this._updateFieldTouched(name, true); },
                 untouch: (name) => { this._updateFieldTouched(name, false); },
@@ -125,42 +126,59 @@ class Form extends React.Component<Props, State> {
         };
     };
 
-    private _updateFieldValue(name: string, value: unknown) {
+    private _updateFieldValues(values: { [key: string]: unknown }) {
         return new Promise<void>(resolve => {
             this.setState(prev => {
                 const fields = prev.fields;
 
-                const oldField = fields[name];
-                if (!oldField) {
-                    console.warn("Trying to update field", name, "but it's not in the fields list. New value:", value);
+                const newFields = { ...fields };
+
+                let anythingUpdated = false;
+                Object.entries(values).forEach(([name, value]) => {
+                    const oldField = fields[name];
+                    if (!oldField) {
+                        console.warn(
+                            "Trying to update field", name, "but it's not in the fields list. New value:", value,
+                        );
+                        return;
+                    }
+
+                    anythingUpdated = true;
+
+                    const updatedValues = oldField.type === "checkbox"
+                        ? {
+                            checked: Boolean(value),
+                            type: "checkbox",
+                            value: !oldField.originalChecked ? value : oldField.originalValue,
+                        }
+                        : { value };
+
+                    newFields[name] = {
+                        ...oldField,
+                        props: {
+                            ...oldField.props,
+                            ...updatedValues,
+                        },
+                        changed: true,
+                        touched: true,
+                    };
+                });
+
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                if (!anythingUpdated) {
                     return null;
                 }
 
-                const updatedValues = oldField.type === "checkbox"
-                    ? {
-                        checked: Boolean(value),
-                        type: "checkbox",
-                        value: !oldField.originalChecked ? value : oldField.originalValue,
-                    }
-                    : { value };
-
                 return {
                     ...prev,
-                    fields: {
-                        ...fields,
-                        [name]: {
-                            ...oldField,
-                            props: {
-                                ...oldField.props,
-                                ...updatedValues,
-                            },
-                            changed: true,
-                            touched: true,
-                        },
-                    },
+                    fields: newFields,
                 };
             }, () => { resolve(); });
         });
+    }
+
+    private _updateFieldValue(name: string, value: unknown) {
+        return this._updateFieldValues({ [name]: value });
     }
 
     private _convertValue(type: Field["type"], value: unknown) {
@@ -353,8 +371,9 @@ const useForm = () => {
     return useContext(FormContext);
 };
 
-const useFields = () => {
-    return useContext(FieldsContext);
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
+const useFields = <T extends unknown = string>() => {
+    return useContext(FieldsContext) as FullFields<T>;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint

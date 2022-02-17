@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [UNRELEASED]
 (nothing yet)
 
+## [1.0.0-alpha.3] - 2022-02-17
+### Added
+- `updateFields` method for updating multiple fields at once
+- exported `FormCtx` type
+### Fixed
+- `useFields` default types
+
 ## [1.0.0-alpha.2] - 2022-02-16
 ### Added
 - `onForm` prop for accessing the form "from above"
