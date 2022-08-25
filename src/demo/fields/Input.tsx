@@ -1,8 +1,10 @@
 import React from "react";
+
 import classnames from "classnames";
-import styles from "./styles.module.scss";
 
 import type { FullField } from "../../types";
+
+import styles from "./styles.module.scss";
 
 interface Props {
     field: FullField;

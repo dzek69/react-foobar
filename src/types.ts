@@ -29,11 +29,11 @@ interface FormCtx {
     /**
      * Updates single field value
      */
-    updateValue: (name: string, value: unknown) => void;
+    updateValue: (name: string, value: unknown) => Promise<void>;
     /**
      * Updates multiple fields values
      */
-    updateValues: (values: {[ key: string ]: unknown}) => void;
+    updateValues: (values: { [ key: string ]: unknown }) => Promise<void>;
     /**
      * Submits the form
      */
@@ -76,6 +76,10 @@ interface FormCtx {
      * Forces validation on form
      */
     validate: () => Promise<boolean>;
+    /**
+     * Resets form `isFinished` state
+     */
+    resetFinished: () => void;
 }
 
 type ValidationSource = "submit" | "mount" | "blur" | "change" | "force";

@@ -1,4 +1,5 @@
 import type { ChangeEvent } from "react";
+
 import { tryFirst } from "./utils.js";
 
 interface ObjectDataTransfer { dataTransfer?: DataTransfer }
@@ -78,7 +79,7 @@ const tryWeb = (value: Event) => {
     ], error);
 };
 
-const tryReactNative = (value: { nativeEvent?: { text?: string | null }}) => {
+const tryReactNative = (value: { nativeEvent?: { text?: string | null } }) => {
     if (!value.nativeEvent) {
         throw new Error("Not a React Native event");
     }
@@ -109,7 +110,7 @@ const tryGenericValue = (value: unknown) => {
 interface VC { [key: string]: ((v: any) => unknown) | undefined }
 
 const valueConverters: VC = {
-    "rn-text": (value: { nativeEvent: { text: string }}) => value.nativeEvent.text,
+    "rn-text": (value: { nativeEvent: { text: string } }) => value.nativeEvent.text,
     "checkbox": (value: ChangeEvent<HTMLInputElement>) => value.target.checked,
     "auto": (value: unknown) => {
         return tryFirst(value, [

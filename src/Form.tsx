@@ -1,6 +1,7 @@
 /* eslint-disable max-lines */
 import React, { createContext, useContext } from "react";
-import { mapValues, noop, rethrow } from "bottom-line-utils";
+
+import { ensureError, mapValues, noop, rethrow } from "bottom-line-utils";
 
 import type {
     Field,
@@ -13,6 +14,7 @@ import type {
     ValidationResult,
     ValidationSource,
 } from "./types";
+
 import { defaultFormContext, defaultOptions } from "./utils.js";
 import { valueConverters } from "./valueConverters.js";
 
@@ -41,6 +43,7 @@ interface State {
 // @TODO react on fields prop update!
 // @TODO add option to set changed state
 // @TODO support for reset form/field
+// @TODO get values of only touched fields
 
 class Form extends React.Component<Props, State> {
     public constructor(props: Props) {
@@ -60,6 +63,7 @@ class Form extends React.Component<Props, State> {
                 isValidating: false,
                 validate: () => this._validate("force"),
                 getValues: () => this._getValues(),
+                resetFinished: () => { this._resetFinished(); },
             },
             fields: mapValues(props.fields, (field, name) => {
                 if (!field) {
@@ -70,7 +74,7 @@ class Form extends React.Component<Props, State> {
         };
     }
 
-    public componentDidMount() {
+    public override componentDidMount() {
         if (this.props.options?.validateOn?.mount ?? defaultOptions.validateOn.mount) {
             this._validate("mount").catch(noop);
         }
@@ -78,13 +82,13 @@ class Form extends React.Component<Props, State> {
         this.props.onForm?.(this.state.formCtx);
     }
 
-    public componentDidUpdate(prevProps: Props, prevState: State) {
+    public override componentDidUpdate(prevProps: Props, prevState: State) {
         if (prevState.formCtx !== this.state.formCtx) {
             this.props.onForm?.(this.state.formCtx);
         }
     }
 
-    public componentWillUnmount() {
+    public override componentWillUnmount() {
         this.props.onForm?.(null);
     }
 
@@ -110,8 +114,13 @@ class Form extends React.Component<Props, State> {
                 value: f.value,
             };
 
+        const maybeType: Pick<FullField, "type"> = {};
+        if (f.type) {
+            maybeType.type = f.type;
+        }
+
         return {
-            type: f.type,
+            ...maybeType,
             changed: false,
             touched: false,
             error: null,
@@ -287,6 +296,18 @@ class Form extends React.Component<Props, State> {
         }
     }
 
+    private _resetFinished() {
+        this.setState(prev => {
+            return {
+                ...prev,
+                formCtx: {
+                    ...prev.formCtx,
+                    isFinished: false,
+                },
+            };
+        });
+    }
+
     private async _validate(source: ValidationSource) {
         if (this.state.formCtx.isValidating) {
             throw new Error("Already validating"); // @todo future version should just stop old validation
@@ -312,7 +333,7 @@ class Form extends React.Component<Props, State> {
         }
         catch (e: unknown) {
             this._updateFieldsErrors({});
-            throw e;
+            throw ensureError(e);
         }
         finally {
             this.setState(prev => {
@@ -356,7 +377,7 @@ class Form extends React.Component<Props, State> {
         this.setState({ fields: newFields });
     }
 
-    public render() {
+    public override render() {
         return (
             <FormContext.Provider value={this.state.formCtx}>
                 <FieldsContext.Provider value={this.state.fields}>

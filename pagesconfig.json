@@ -1,9 +1,6 @@
 {
-    "groups": [
-        {
-            "title": "Tutorials",
-            "pages": [
-            ]
-        }
-    ]
+    "pages": [
+        { "title": "Introduction", "source": "Introduction.md" }
+    ],
+    "source": "tutorials"
 }

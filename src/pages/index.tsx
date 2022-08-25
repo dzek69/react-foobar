@@ -1,9 +1,11 @@
 import React from "react";
 
-import type { Fields as FieldsType, ValidationResult } from "..";
-import { Form } from "..";
-import { Fields } from "../demo/Fields";
 import { wait } from "bottom-line-utils";
+
+import type { Fields as FieldsType, ValidationResult } from "..";
+
+import { Form } from "..";
+import { Fields } from "../demo/Fields.js";
 
 const fields: FieldsType = {
     fullname: {
@@ -53,4 +55,5 @@ const IndexComp = () => (
     </Form>
 );
 
+// eslint-disable-next-line import/no-default-export
 export default IndexComp;

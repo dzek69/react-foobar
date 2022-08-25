@@ -3,7 +3,7 @@
 /test/
 /.next/
 
-/babel.config.cjs
+/babel.config.js
 /jest.config.cjs
 /yarn.lock
 /*.tgz
@@ -13,3 +13,9 @@
 /.editorconfig
 /tsconfig.*
 /.eslintrc.json
+
+/pagesconfig.json
+/esm/pages
+/esm/demo
+/.next
+/next-env.d.ts

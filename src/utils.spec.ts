@@ -1,4 +1,4 @@
-import { tryFirst } from "./utils";
+import { tryFirst } from "./utils.js";
 
 describe("utils", () => {
     it("tryFirst should work", function() {

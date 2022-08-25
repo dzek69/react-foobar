@@ -1,8 +1,11 @@
 import type { FormEvent } from "react";
 import React, { useCallback } from "react";
 
+import { noop, rethrow } from "bottom-line-utils";
+
 import { useField, useFields, useForm } from "..";
-import { Input } from "./fields/Input";
+
+import { Input } from "./fields/Input.js";
 
 interface Props {}
 
@@ -17,18 +20,20 @@ const Fields: React.FC<Props> = () => {
     const checkboxSuper = useField("checkboxSuper");
     const cb = useField("cb");
 
-    const handleSubmit = useCallback(async (evt: FormEvent) => {
-        evt.preventDefault();
-        try {
-            await form.submit();
-        }
-        catch (e: unknown) {
-            console.error("Some errors happened", e);
-        }
+    const handleSubmit = useCallback((evt: FormEvent) => {
+        (async () => {
+            evt.preventDefault();
+            try {
+                await form.submit();
+            }
+            catch (e: unknown) {
+                console.error("Some errors happened", e);
+            }
+        })().catch(rethrow);
     }, []);
 
     const handleMeowClick = useCallback(() => {
-        form.updateValue("fullname", "meow");
+        form.updateValue("fullname", "meow").catch(noop);
     }, []);
 
     const handleTouchedToggle = useCallback(() => {
@@ -44,10 +49,12 @@ const Fields: React.FC<Props> = () => {
         alert("The form is " + (form.isValid() ? "valid" : "invalid"));
     }, [fullname.changed]);
 
-    const handleValidation = useCallback(async () => {
-        const isValid = await form.validate();
-        // eslint-disable-next-line no-undef
-        alert("The form is " + (isValid ? "valid" : "invalid"));
+    const handleValidation = useCallback(() => {
+        (async () => {
+            const isValid = await form.validate();
+            // eslint-disable-next-line no-undef
+            alert("The form is " + (isValid ? "valid" : "invalid"));
+        })().catch(rethrow);
     }, [fullname.changed]);
 
     const handleAgeClick = useCallback(() => {
@@ -56,7 +63,7 @@ const Fields: React.FC<Props> = () => {
         form.updateValues({
             age: newAge,
             fullname: String(form.getValues().fullname) + String(newAge),
-        });
+        }).catch(noop);
     }, []);
 
     return (

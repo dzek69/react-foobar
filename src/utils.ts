@@ -17,6 +17,7 @@ const defaultFormContext: FormCtx = {
     touch: fail,
     untouch: fail,
     getValues: fail,
+    resetFinished: fail,
 };
 
 const defaultOptions: Options = {
