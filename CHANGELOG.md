@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [UNRELEASED]
 (nothing yet)
 
+## [1.0.0-alpha.5] - 2022-08-25
+### Added
+- `updateErrors` method
+
 ## [1.0.0-alpha.4] - 2022-08-25
 ### Added
 - `resetFinished` method

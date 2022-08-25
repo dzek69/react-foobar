@@ -53,6 +53,7 @@ class Form extends React.Component<Props, State> {
             formCtx: {
                 updateValue: (name, value) => this._updateFieldValue(name, value),
                 updateValues: (values) => this._updateFieldValues(values),
+                updateErrors: (errors) => { this._updateFieldsErrors(errors); },
                 submit: () => this._submit(),
                 touch: (name) => { this._updateFieldTouched(name, true); },
                 untouch: (name) => { this._updateFieldTouched(name, false); },
@@ -357,8 +358,7 @@ class Form extends React.Component<Props, State> {
     private _updateFieldsErrors(errors: ValidationResult) {
         const fields = this.state.fields;
         const newFields = mapValues(fields, (field, name) => {
-            // @todo clear empty arrays from errors
-            if (errors?.[name]) {
+            if (errors?.[name]?.length) {
                 return {
                     ...field!,
                     error: errors[name],

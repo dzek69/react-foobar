@@ -35,6 +35,10 @@ interface FormCtx {
      */
     updateValues: (values: { [ key: string ]: unknown }) => Promise<void>;
     /**
+     * Updates multiple fields errors
+     */
+    updateErrors: (errors: ValidationResult) => void;
+    /**
      * Submits the form
      */
     submit: () => Promise<void>;
