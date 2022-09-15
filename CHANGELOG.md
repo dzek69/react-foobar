@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [UNRELEASED]
 (nothing yet)
 
+## [1.0.0-alpha.6] - 2022-09-15
+### Fixed
+- `change` validation triggered with outdated values
+
 ## [1.0.0-alpha.5] - 2022-08-25
 ### Added
 - `updateErrors` method

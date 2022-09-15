@@ -129,7 +129,7 @@ class Form extends React.Component<Props, State> {
             originalChecked: f.checked,
             props: {
                 name: name,
-                onChange: (e: unknown) => { this._updateFieldValueByType(f.type, name, e); },
+                onChange: (e: unknown) => { this._updateFieldValueByType(f.type, name, e).catch(rethrow); },
                 onBlur: () => { this._handleFieldBlur(name); },
                 ...maybeChecked,
             },
@@ -205,13 +205,10 @@ class Form extends React.Component<Props, State> {
         return converter(value);
     }
 
-    private readonly _updateFieldValueByType = (type: Field["type"], name: string, value: unknown) => {
+    private readonly _updateFieldValueByType = async (type: Field["type"], name: string, value: unknown) => {
         const newValue = this._convertValue(type, value);
 
-        (async () => {
-            await this._updateFieldValue(name, newValue);
-        })().catch(rethrow);
-
+        await this._updateFieldValue(name, newValue);
         if (this.props.options?.validateOn?.change ?? defaultOptions.validateOn.change) {
             this._validate("change").catch(noop);
         }
