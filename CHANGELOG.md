@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [UNRELEASED]
 (nothing yet)
 
+## [1.0.0-alpha.8] - 2023-02-09
+### Fixed
+- importing the library
+
 ## [1.0.0-alpha.7] - 2023-02-09
 ### Breaking
 - react 18.2 is required
