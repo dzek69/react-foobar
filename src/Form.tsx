@@ -33,6 +33,7 @@ interface Props {
         }
     ) => (MaybePromise<ValidationResult>);
     options?: PropsOptions;
+    children: React.ReactNode;
 }
 
 interface State {
